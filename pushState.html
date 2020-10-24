@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="">
+    <title>Document</title>
+</head>
+
+<body>
+    <button id="a">A</button>
+    <button id="b">B</button>
+    <button id="c">C</button>
+
+    <button id="d">D</button>
+    <button id="e">E</button>
+    <button id="f">F</button>
+    <div id="cont"></div>
+    <div id="contDEF"></div>
+    <script>
+
+        onload = () => {
+            renderer();
+            const button = document.getElementsByTagName('button');
+            for (const obj of button) {
+                obj.addEventListener('click', (e) => {
+                    const id = e.target.id;
+                    const str = 'file:///Users/apple/Desktop/webPractice/learnWebforBaiDu/JS/day_six/pushState.html';
+                    if (!!(window.history && history.pushState)) {
+                        // 支持History API
+                        const sr = location.search;
+                        if (sr.length === 0) {
+                            history.pushState(null,null,`${str}?${id}`);
+                        } else if (sr.length === 2) {
+                            if ('abc'.includes(sr[1]) === 'abc'.includes(id)) {
+                                history.pushState(null,null,`${str}?${id}`);
+                            } else {
+                                history.pushState(null,null,str + sr + id);
+                            }
+                        } else {
+                            if ('abc'.includes(sr[1]) === 'abc'.includes(id)) {
+                                history.pushState(null,null,`${str}?${sr[2] + id}`);
+                            } else {
+                                history.pushState(null,null,`${str}?${sr[1] + id}`);
+                            }
+                        }
+                        renderer();
+                    }
+                });
+            }
+        }
+
+        function getHash() {
+            //取到需要的值，并返回
+            return location.search;
+        }
+
+        function renderer() {
+            //内容 = 解析Hash，获取状态参数()
+            //cont的innerHTML = 内容
+            const sr = getHash().slice(1);
+            for (let i = 0; i < sr.length; i++) {
+                if ('abc'.includes(sr[i])) {
+                    document.getElementById('cont').innerHTML = document.getElementById(sr[i]).innerHTML;
+                } else {
+                    document.getElementById('contDEF').innerHTML = document.getElementById(sr[i]).innerHTML;
+                }
+            }
+        }
+
+        // window.onhashchange = renderer();
+        window.addEventListener('popstate',renderer);
+
+        //进来先执行一次渲染函数()
+    </script>
+</body>
+
+</html>
